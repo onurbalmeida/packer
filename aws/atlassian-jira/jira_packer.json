@@ -1,0 +1,32 @@
+{
+  "variables": {
+    "AWS_ACCESS_KEY": "My_ACCESS_KEY",
+    "AWS_SECRET_KEY": "My_SECRET_KEY"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "access_key": "{{user `AWS_ACCESS_KEY`}}",
+      "secret_key": "{{user `AWS_SECRET_KEY`}}",
+      "region": "eu-west-1",
+      "source_ami": "ami-234ecc54",
+      "instance_type": "t2.micro",
+      "ssh_username": "ubuntu",
+      "ssh_timeout": "10m",
+      "ami_name": "jira-ubuntu-release-{{isotime | clean_ami_name }}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt-get update -y",
+        "cd /tmp",
+	"sudo apt-get install oracle-java9-installer",
+        "wget http://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-6.4.1-x64.bin",
+        "chmod +x atlassian-jira-6.4.1-x64.bin",
+        "sudo /tmp/atlassian-jira-6.4.1-x64.bin -q"
+      ]
+    }
+  ]
+}
